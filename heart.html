@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Rate Monitor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: #f4f4f4;
+        }
+        canvas {
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Heart Rate Monitor</h1>
+    <canvas id="heartRateCanvas" width="600" height="400"></canvas>
+    <button id="startSimulation">Start Simulation</button>
+    <button id="stopSimulation">Stop Simulation</button>
+
+    <script>
+        const canvas = document.getElementById('heartRateCanvas');
+        const ctx = canvas.getContext('2d');
+        const startButton = document.getElementById('startSimulation');
+        const stopButton = document.getElementById('stopSimulation');
+
+        let heartRateData = []; // Stores the heart rate data points
+        const maxDataPoints = 50; // Maximum number of data points to show on the chart
+        const canvasHeight = canvas.height;
+        const canvasWidth = canvas.width;
+        const maxHeartRate = 200; // Maximum heart rate value
+        const normalRange = { min: 60, max: 100 }; // Normal range of heart rate
+        let simulationInterval;
+
+        function drawChart() {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight); // Clear the canvas
+
+            // Draw grid lines and labels
+            ctx.strokeStyle = '#ddd';
+            ctx.fillStyle = '#333';
+            ctx.font = '12px Arial';
+            for (let i = 0; i <= maxHeartRate; i += 20) {
+                const y = canvasHeight - (i / maxHeartRate) * canvasHeight;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvasWidth, y);
+                ctx.stroke();
+                ctx.fillText(i, 5, y - 5); // Add label
+            }
+
+            // Draw normal range (60–100 bpm)
+            ctx.strokeStyle = '#00bcd4'; // Cyan color for normal range lines
+            ctx.beginPath();
+            const minY = canvasHeight - (normalRange.min / maxHeartRate) * canvasHeight;
+            const maxY = canvasHeight - (normalRange.max / maxHeartRate) * canvasHeight;
+            ctx.moveTo(0, minY);
+            ctx.lineTo(canvasWidth, minY);
+            ctx.moveTo(0, maxY);
+            ctx.lineTo(canvasWidth, maxY);
+            ctx.stroke();
+
+            // Draw heart rate line
+            ctx.strokeStyle = '#ff0000';
+            ctx.beginPath();
+            heartRateData.forEach((rate, index) => {
+                const x = (canvasWidth / maxDataPoints) * index;
+                const y = canvasHeight - (rate / maxHeartRate) * canvasHeight;
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+        }
+
+        function addRandomHeartRate() {
+            const randomHeartRate = Math.floor(Math.random() * 120) + 20; // Random value between 20 and 200
+            heartRateData.push(randomHeartRate);
+            if (heartRateData.length > maxDataPoints) {
+                heartRateData.shift(); // Remove the oldest data point
+            }
+            drawChart();
+        }
+        // Initial draw to display grid and normal range
+        drawChart();
+    </script>
+</body>
+</html>

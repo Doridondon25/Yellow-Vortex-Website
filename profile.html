@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      background-image: url('backgroundrobot.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+    .navbar {
+      background-color: green;
+    }
+    .navbar-brand {
+      color: #fff;
+      font-weight: bold;
+    }
+    .navbar-nav .nav-link {
+      color: #fff;
+    }
+    .profile-section {
+      padding: 50px 30px;
+      flex: 1;
+    }
+    .profile-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+    .profile-card h2 {
+      color: #007bff;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+    .form-group label {
+      font-weight: bold;
+      padding-bottom: 5px;
+    }
+    .form-group {
+      padding: 10px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: green;
+      color: white;
+      width: 100%;
+    }
+    .btn-edit, .btn-save {
+      padding: 12px 25px;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    .btn-edit {
+      background-color: green;
+      color: white;
+    }
+    .btn-save {
+      background-color: #007bff;
+      color: white;
+    }
+    .navbar-nav .nav-link:hover {
+      color: black !important;
+    }
+    .image-preview {
+      width: 100%;
+      height: auto;
+      max-width: 300px;
+      margin-bottom: 20px;
+    }
+    .alert {
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      z-index: 1000;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        Yellow-Vortex
+        <img src="logo.png" height="50" width="70" alt="Logo" />
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="medication.html">| Medication <i class="fa-solid fa-syringe"></i> |</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="managmet.html">| Management <i class="fa-solid fa-folder-plus"></i> |</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="appointments.html">| Appointments <i class="fa-regular fa-calendar-check"></i> |</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="logout.html">| Logout <i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="alert alert-success" id="successAlert">
+    Profile updated successfully!
+  </div>
+
+  <div class="alert alert-danger" id="failAlert">
+    Profile failed to update!
+  </div>
+
+  <div class="container profile-section">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="profile-card">
+          <h2>User Profile</h2>
+          <form id="profileForm">
+            <div class="form-group mb-3">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" disabled>
+            </div>
+            <div class="form-group mb-3">
+              <label for="address">Address</label>
+              <input type="text" class="form-control" id="address" disabled>
+            </div>
+            <div class="form-group mb-3">
+              <label for="emergencyContact">Emergency Contact</label>
+              <input type="text" class="form-control" id="emergencyContact" disabled>
+            </div>
+            <div class="form-group mb-3">
+              <label for="emergencyContactNumber">Emergency Contact Number</label>
+              <input type="text" class="form-control" id="emergencyContactNumber" disabled>
+            </div>
+            <div class="form-group mb-3">
+              <label for="productId">Product ID</label>
+              <input type="text" class="form-control" id="productId" disabled>
+            </div>
+            <div class="form-group mb-3">
+              <label for="phoneNumber">Phone Number</label>
+              <input type="text" class="form-control" id="phoneNumber" disabled>
+            </div>
+            <button type="button" class="btn btn-edit" onclick="enableEditing()">Edit Profile</button>
+            <button type="submit" class="btn btn-save" disabled>Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2024 Yellow-Vortex. All rights reserved.</p>
+  </footer>
+
+  <script type="module">
+    import { checkIsConnect } from "./auth-check.js";
+    checkIsConnect();
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC59vWDbdtLqfRTlqQWpdrrt2Eia36PqH8",
+      authDomain: "yellow-vortex.firebaseapp.com",
+      databaseURL: "https://yellow-vortex-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "yellow-vortex",
+      storageBucket: "yellow-vortex.firebasestorage.app",
+      messagingSenderId: "1007464214882",
+      appId: "1:1007464214882:web:c1e7b0e1a266309b94bc3b",
+      measurementId: "G-V76FRQK0FR"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const database = getDatabase();
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const userRef = ref(database, 'users/' + user.uid);
+        onValue(userRef, (snapshot) => {
+          const userData = snapshot.val();
+          if (userData) {
+            document.getElementById('name').value = userData.fullName;
+            document.getElementById('address').value = userData.address;
+            document.getElementById('emergencyContact').value = userData.emergencyContact;
+            document.getElementById('emergencyContactNumber').value = userData.emergencyContactNumber;
+            document.getElementById('phoneNumber').value = userData.phoneNumber;
+            document.getElementById('productId').value = userData.productId;
+          }
+        });
+      }
+    });
+
+    window.enableEditing = function() {
+      document.getElementById('name').disabled = false;
+      document.getElementById('address').disabled = false;
+      document.getElementById('emergencyContact').disabled = false;
+      document.getElementById('emergencyContactNumber').disabled = false;
+      document.getElementById('phoneNumber').disabled = false;
+      document.getElementById('productId').disabled = false;
+      document.querySelector('.btn-save').disabled = false;
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const user = auth.currentUser;
+      if (user) {
+        const name = document.getElementById('name').value;
+        const address = document.getElementById('address').value;
+        const emergencyContact = document.getElementById('emergencyContact').value;
+        const emergencyContactNumber = document.getElementById('emergencyContactNumber').value;
+        const phoneNumber = document.getElementById('phoneNumber').value;
+        const productId = document.getElementById('productId').value;
+
+        update(ref(database, 'users/' + user.uid), {
+          fullName: name,
+          address: address,
+          emergencyContact: emergencyContact,
+          emergencyContactNumber: emergencyContactNumber,
+          phoneNumber: phoneNumber,
+          productId: productId
+        }).then(() => {
+          const successAlert = document.getElementById('successAlert');
+          successAlert.style.display = 'block';
+          setTimeout(() => { successAlert.style.display = 'none'; }, 2000);
+        }).catch((error) => {
+          const failAlert = document.getElementById('failAlert');
+          failAlert.style.display = 'block';
+          setTimeout(() => { failAlert.style.display = 'none'; }, 2000);
+        });
+      }
+    });
+  </script>
+
+  <!-- Include Bootstrap's JS bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 10px;
+            background: #f4f4f4;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            background-image: url('ron3.png');
+            background-size: cover;
+            background-position: center; 
+            background-repeat: no-repeat;
+        }
+
+        .navbar {
+            background-color: green;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1030;
+        }
+
+        .navbar-brand {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .navbar-nav .nav-link {
+            color: #fff;
+        }
+
+        .form-container {
+            background-color: #e8f5e9;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            margin-top: 80px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 26px;
+            color: #388e3c;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #43a047;
+            border: none;
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .btn-primary:hover {
+            background-color: #2e7d32;
+        }
+        .navbar-nav .nav-link:hover {
+            color: black !important;
+        }
+
+        footer {
+            background-color: green;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Yellow-Vortex<img src = logo.png height="50" width="70" /></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Sign In <i class="fa-solid fa-arrow-right-to-bracket"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home <i class="fa-solid fa-house"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About <i class="fa-regular fa-address-card"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="form-container">
+        <h2>Sign Up</h2>
+        <form id="signupForm">
+            <div class="mb-3">
+                <label for="signupName" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="signupName" placeholder="Enter your name" required>
+            </div>
+            <div class="mb-3">
+                <label for="signupEmail" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="signupEmail" placeholder="Enter your email" required>
+            </div>
+            <div class="mb-3">
+                <label for="signupPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="signupPassword" placeholder="Create a password" required>
+            </div>
+            <div class="mb-3">
+                <label for="IDproduct" class="form-label">Product ID</label>
+                <input type="text" class="form-control" id="ID" placeholder="Enter a valid product ID" required>
+                <small id="idError" class="form-text text-danger" style="display: none;">Invalid Product ID. Please try again.</small>
+            </div>
+            <div class="mb-3">
+                <label for="PhoneNumber" class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" id="PhoneNumber" placeholder="Enter your number" required>
+            </div>
+            <div class="mb-3">
+                <label for="Address" class="form-label">Address</label>
+                <input type="text" class="form-control" id="Address" placeholder="Enter Address of home" required>
+            </div>
+            <div class="mb-3">
+                <label for="EmergencyContact" class="form-label">Emergency Contact</label>
+                <input type="text" class="form-control" id="EmergencyContact" placeholder="Enter name of Emergency Contact" required>
+            </div>
+            <div class="mb-3">
+                <label for="EmergencyContactNumber" class="form-label">Emergency Contact Number</label>
+                <input type="tel" class="form-control" id="EmergencyContactNumber" placeholder="Enter number of Emergency Contact" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+        </form>
+        <p class="form-text">Already have an account? <a href="login.html">Login here</a></p>
+    </div>
+
+    <footer class="text-center mt-5">
+        <p>© 2024 Robot Control. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

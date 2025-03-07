@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    body {
+        background: #f4f4f4; 
+        color: #333;
+        margin: 0;
+        background-image: url('ron3.png');
+        background-size:vh; 
+        background-position: center; 
+        background-repeat: no-repeat; 
+    }
+    .navbar {
+        background-color: green;
+        position: fixed; /* Fix the navbar to the top */
+        top: 0;
+        width: 100%;
+        z-index: 1030; /* Ensure it appears above other elements */
+    }
+    .navbar-brand {
+        color: #fff;
+        font-weight: bold;
+    }
+    .navbar-nav .nav-link {
+        color: #fff;
+    }
+    .form-container {
+        background-color: #e8f5e9; 
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        /* margin-top: 10px; Add margin to account for the fixed navbar */
+    }
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 26px;
+        color: #388e3c; 
+        font-weight: bold;
+    }
+    .form-control {
+        background-color: #fff;
+        color: #333;
+        border: 1px solid #ccc;
+    }
+    .form-control:focus {
+        background-color: #f1f8e9;
+        color: #333;
+        border-color: #388e3c; 
+    }
+    .btn-primary {
+        background-color: #43a047; 
+        border: none;
+        width: 100%;
+        margin-top: 20px;
+        border-radius: 5px;
+    }
+    .btn-primary:hover {
+        background-color: #2e7d32; 
+    }
+    .form-text {
+        text-align: center;
+        margin-top: 10px;
+        color: #777;
+    }
+    .navbar-nav .nav-link:hover {
+            color: black !important;
+        }
+    footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            background-color: green;
+            color: white;
+        }
+    a {
+        color: #fbc02d; 
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Yellow-Vortex<img src = logo.png height="50" width="70" /></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">| Home <i class="fa-solid fa-house"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="signup.html">| Sign Up <i class="fa-solid fa-user-plus"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">| About <i class="fa-regular fa-address-card"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="form-container">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label for="loginEmail" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="loginEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="loginPassword" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <p class="form-text">Don't have an account? <a href="signup.html">Sign up here</a></p>
+        </div>
+        <footer class="text-center mt-5">
+            <p>© 2024 Robot Control. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getDatabase, ref, get, set} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC59vWDbdtLqfRTlqQWpdrrt2Eia36PqH8",
+            authDomain: "yellow-vortex.firebaseapp.com",
+            databaseURL: "https://yellow-vortex-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "yellow-vortex",
+            storageBucket: "yellow-vortex.firebasestorage.app",
+            messagingSenderId: "1007464214882",
+            appId: "1:1007464214882:web:c1e7b0e1a266309b94bc3b",
+            measurementId: "G-V76FRQK0FR"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const database = getDatabase();
+
+        // Login form submission
+        document.getElementById("loginForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                const userRef = ref(database, 'users/' + user.uid);
+                const snapshot = await get(userRef);
+
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    const userName = userData.fullName; 
+                    const updatedIsConnect = "1";
+                    const userRef = ref(database, 'users/' + user.uid);
+                    set(userRef, {
+                        ...userData, // Keep existing user data
+                        isConnect: updatedIsConnect // Update the isConnect field
+                    });                 
+                    localStorage.setItem('userId', user.uid);
+                    localStorage.setItem('userEmail', user.email);
+                    localStorage.setItem('userName', userName);
+                    localStorage.setItem('userProductId', userData.productId); 
+                    localStorage.setItem('emergencyContactNumber', userData.emergencyContactNumber);
+                    localStorage.setItem('isConnect', userData.isConnect);
+
+
+                    window.location.href = "loading.html";
+                } else {
+                    alert("No user data found in the database.");
+                }
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

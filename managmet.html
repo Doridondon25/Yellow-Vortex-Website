@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Robot Control Panel</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome (optional) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Inline CSS -->
+    <style>
+      /* Prevent text selection on mobile */
+      * {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      /* Page background */
+      body {
+        min-width: 150px !important;
+        background-image: url('ron3.png'); /* Replace with your image path */
+      }
+
+      /* Navbar */
+      .navbar {
+        background-color: green;
+      }
+      .navbar-brand {
+        color: #fff;
+        font-weight: bold;
+      }
+      .navbar-nav .nav-link {
+        color: #fff;
+      }
+      .navbar-nav .nav-link:hover {
+        color: black !important;
+      }
+
+      /* Main title */
+      h1 {
+        font-size: 2.5em;
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
+        margin-top: 50px;
+        padding-top: 35px;
+      }
+
+      /* Emergency button container */
+      .center-emergency-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      .emergency-title {
+        margin-top: -20px; /* Move it up */
+        position: relative;
+        top: -5px; /* Adjust as needed */
+      }
+
+      /* Emergency button */
+      .emergency-button {
+        width: 120px !important;
+        height: 120px !important;
+        border-radius: 60px;
+        background-color: red;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+      }
+      .emergency-button:hover {
+        transform: scale(1.1);
+      }
+      .emergency-button:active {
+        transform: scale(0.95);
+      }
+
+      /* Joystick */
+      #joystick-base {
+        width: 120px;
+        height: 120px;
+        background-color: #333;
+        border-radius: 50%;
+        position: relative;
+        margin-top: 20px;
+      }
+      #joystick {
+        width: 40px;
+        height: 40px;
+        background-color: #ff5722;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      /* Temperature Scale */
+      .temperature-scale {
+        display: inline-block;
+        position: relative;
+        width: 60px;
+        height: 300px;
+        border: 2px solid #333;
+        border-radius: 10px;
+        background: linear-gradient(to bottom, red, yellow, lightblue, blue);
+        margin: 20px auto; /* center horizontally */
+      }
+      .level {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 0 0 10px 10px;
+        transition: height 0.3s ease;
+      }
+
+      /* BPM & ECG Cards */
+      .card h5 span {
+        display: block;
+        font-size: 14px;
+        color: #000;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+      }
+      table thead tr {
+        border-bottom: 1px solid #ddd;
+      }
+      table th,
+      table td {
+        padding: 8px;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .emergency-button {
+          width: 100px !important;
+          height: 100px !important;
+          font-size: 14px;
+        }
+        #joystick-base {
+          width: 100px;
+          height: 100px;
+        }
+        #joystick {
+          width: 30px;
+          height: 30px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Main Title -->
+    <h1>
+      Robot id:
+      <script>
+        document.write(localStorage.getItem("userProductId"));
+      </script>
+    </h1>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          Yellow-Vortex
+          <img src="logo.png" height="50" width="70" alt="Logo"/>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="profile.html">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="medication.html">Medication</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="home.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="appointments.html">Appointments</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="logout.html">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Container for the cards -->
+    <div class="container mt-5">
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        
+        <!-- Card 1: Video -->
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body text-center">
+              <h5 class="card-title">Video</h5>
+              <div class="video-container text-center">
+                <img
+                  id="stream"
+                  style="width: 60%; max-width: 640px; height: auto; vertical-align: middle;"
+                  crossorigin="anonymous"
+                  onerror="this.onerror=null; this.src='nocamera.jpg';"
+                  src="nocamera.jpg"
+                  alt="Video Stream"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Emergency Button -->
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body text-center center-emergency-button">
+              <h5 class="card-title emergency-title">Emergency call</h5>
+              <button class="emergency-button btn btn-danger w-100 h-100">
+                <i class="fa-solid fa-user-nurse"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Joystick -->
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body text-center">
+              <h5 class="card-title">Joystick Control</h5>
+              <div
+                id="joystick-base"
+                class="mx-auto"
+                style="position: relative;"
+              >
+                <div
+                  id="joystick"
+                  style="left: 50%; top: 50%; transform: translate(-50%, -50%);"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Temperature & Humidity -->
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body text-center">
+              <h5 class="card-title">
+                Temperature <span id="temperature">0</span>°C
+              </h5>
+              <div class="temperature-scale mx-auto">
+                <div
+                  id="level"
+                  class="level"
+                  style="height: 0%; background-color: rgb(122, 133, 0);"
+                ></div>
+              </div>
+              <h5 class="card-title">Humidity</h5>
+              <div class="humidity-display">
+                <span id="humidity">0</span>%
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: BPM Monitor -->
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body text-center">
+              <h5 class="card-title">
+                BPM Monitor
+                <span id="bpm-value">0 BPM</span>
+              </h5>
+              <canvas id="heartRateCanvas" width="350" height="200"></canvas>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Age Group</th>
+                    <th>BPM Range</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Children (ages 10 to 12)</td>
+                    <td>70 to 120</td>
+                  </tr>
+                  <tr>
+                    <td>Teens (ages 13 to 19)</td>
+                    <td>60 to 100</td>
+                  </tr>
+                  <tr>
+                    <td>Adults (ages 20 and above)</td>
+                    <td>60 to 100</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6: ECG Monitor -->
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body text-center">
+              <h5 class="card-title">
+                ECG Monitor
+                <span id="ecg-value">0 ECG</span>
+              </h5>
+              <canvas id="ECGCanvas" width="350" height="200"></canvas>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Age Group</th>
+                    <th>ECG Range</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Children (ages 10 to 12)</td>
+                    <td>100 to 200</td>
+                  </tr>
+                  <tr>
+                    <td>Teens (ages 13 to 19)</td>
+                    <td>100 to 200</td>
+                  </tr>
+                  <tr>
+                    <td>Adults (ages 20 and above)</td>
+                    <td>200 to 300</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- .row -->
+    </div> <!-- .container -->
+
+    <!-- Bootstrap Bundle JS (for navbar toggle, etc.) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Your JavaScript (type="module") -->
+    <script type="module">
+      import { checkIsConnect } from "./auth-check.js";
+      checkIsConnect();
+
+      import {
+        getDatabase,
+        ref,
+        get,
+        onValue
+      } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+
+      // Firebase config
+      const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "yellow-vortex.firebaseapp.com",
+        databaseURL:
+          "https://yellow-vortex-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "yellow-vortex",
+        storageBucket: "yellow-vortex.firebasestorage.app",
+        messagingSenderId: "1007464214882",
+        appId: "1:1007464214882:web:c1e7b0e1a266309b94bc3b",
+        measurementId: "G-V76FRQK0FR"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+
+      // Function to fetch IP address from Firebase
+      async function getIPAddress() {
+        try {
+          const driveRef = ref(db, "commands/Drive/ip_address");
+          const snapshot = await get(driveRef);
+          if (snapshot.exists()) {
+            return snapshot.val();
+          } else {
+            console.error("No data available for IP address.");
+            return null;
+          }
+        } catch (error) {
+          console.error("Error fetching IP address:", error);
+        }
+      }
+
+      // Set up the video stream
+      let videoStreamURL = "";
+      async function setupImageStream() {
+        try {
+          const ipAddress = await getIPAddress();
+          if (!ipAddress) {
+            console.error("Failed to fetch IP address.");
+            return;
+          }
+          // Example usage:
+          // videoStreamURL = `http://${ipAddress}:81/stream`;
+          // Hard-coded fallback or example:
+          videoStreamURL = "http://10.0.0.10:81/stream";
+          document.getElementById("stream").src = videoStreamURL;
+        } catch (error) {
+          console.error("Error setting up image stream:", error);
+        }
+      }
+      setupImageStream();
+
+      // Emergency button logic
+      const emergencyButton = document.querySelector(".emergency-button");
+      let emergencyTimeout;
+
+      const startEmergencyAction = (event) => {
+        event.preventDefault(); // Prevent default action
+
+        emergencyTimeout = setTimeout(() => {
+          sendEmergencyState(1); // Indicate emergency is active
+
+          const emergencyNumber = localStorage.getItem("emergencyContactNumber");
+          if (emergencyNumber) {
+            // 1) Initiate phone call
+            window.location.href = "tel:" + emergencyNumber;
+
+            // 2) Open SMS app after phone call attempt
+            setTimeout(() => {
+              const message = encodeURIComponent("Emergency message! Contact immediately.");
+              const smsLink = document.createElement('a');
+              smsLink.href = "sms:" + emergencyNumber + "?body=" + message;
+              smsLink.click();  // triggers SMS
+            }, 500);
+          } else {
+            console.error("No emergency contact number found in localStorage.");
+          }
+        }, 2000); // 2-second hold
+      };
+
+      // Cancel emergency on mouseup/touchend
+      const cancelEmergencyAction = () => {
+        clearTimeout(emergencyTimeout);
+        console.log("Emergency action canceled");
+      };
+
+      // Bind to mouse/touch events
+      emergencyButton.addEventListener("mousedown", startEmergencyAction);
+      emergencyButton.addEventListener("touchstart", startEmergencyAction);
+      emergencyButton.addEventListener("mouseup", cancelEmergencyAction);
+      emergencyButton.addEventListener("touchend", cancelEmergencyAction);
+
+      // Joystick logic
+      let startX, startY, isDragging = false;
+      const joystick = document.getElementById("joystick");
+      const joystickBase = document.getElementById("joystick-base");
+
+      joystick.addEventListener("mousedown", (event) => {
+        startX = event.clientX;
+        startY = event.clientY;
+        isDragging = true;
+      });
+
+      window.addEventListener("mousemove", (event) => {
+        if (!isDragging) return;
+
+        const rect = joystickBase.getBoundingClientRect();
+        const baseCenterX = rect.left + rect.width / 2;
+        const baseCenterY = rect.top + rect.height / 2;
+
+        const dx = event.clientX - baseCenterX;
+        const dy = event.clientY - baseCenterY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const maxDistance = (rect.width / 2) * 1.5;
+
+        if (distance > maxDistance) {
+          joystick.style.left = "50%";
+          joystick.style.top = "50%";
+          isDragging = false;
+          return;
+        }
+
+        let limitedX = dx;
+        let limitedY = dy;
+        if (distance > rect.width / 2) {
+          const angle = Math.atan2(dy, dx);
+          limitedX = (rect.width / 2) * Math.cos(angle);
+          limitedY = (rect.width / 2) * Math.sin(angle);
+        }
+
+        joystick.style.left = (baseCenterX + limitedX - rect.left) + "px";
+        joystick.style.top = (baseCenterY + limitedY - rect.top) + "px";
+
+        let command = "5"; // default stop
+        if (Math.abs(limitedX) > Math.abs(limitedY)) {
+          command = limitedX > 0 ? "2" : "4"; // Right : Left
+        } else {
+          command = limitedY > 0 ? "3" : "1"; // Backward : Forward
+        }
+
+        sendCommandToFirebase(command);
+      });
+
+      window.addEventListener("mouseup", () => {
+        if (isDragging) {
+          isDragging = false;
+          joystick.style.left = "50%";
+          joystick.style.top = "50%";
+          sendCommandToFirebase("5"); // stop
+        }
+      });
+
+      joystickBase.addEventListener("mouseleave", () => {
+        if (isDragging) {
+          isDragging = false;
+          joystick.style.left = "50%";
+          joystick.style.top = "50%";
+          sendCommandToFirebase("5"); // stop
+        }
+      });
+
+      // Send drive commands to Firebase
+      async function sendCommandToFirebase(command) {
+        const firebaseUrl =
+          "https://yellow-vortex-default-rtdb.europe-west1.firebasedatabase.app/commands/Drive.json";
+        try {
+          const response = await fetch(firebaseUrl, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ command })
+          });
+          if (response.ok) {
+            console.log(`Command "${command}" sent successfully!`);
+          } else {
+            console.error("Failed to send command. HTTP status:", response.status);
+          }
+        } catch (error) {
+          console.error("Error sending command to Firebase:", error);
+        }
+      }
+
+      // Send emergency state to Firebase
+      async function sendEmergencyState(state) {
+        const firebaseUrl =
+          "https://yellow-vortex-default-rtdb.europe-west1.firebasedatabase.app/commands/Drive.json";
+        try {
+          const response = await fetch(firebaseUrl, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ emergency: state })
+          });
+          if (response.ok) {
+            console.log(`Emergency state "${state}" sent successfully!`);
+          } else {
+            console.error("Failed to send emergency state. HTTP status:", response.status);
+          }
+        } catch (error) {
+          console.error("Error sending emergency state to Firebase:", error);
+        }
+      }
+
+      // Refs for temperature/humidity/ECG/BPM
+      const temperatureRef = ref(db, "commands/temperature/temperature");
+      const humidityRef = ref(db, "commands/humidity/humidity");
+      const ECGRef = ref(db, "commands/ECG/average_ecg");
+      const BPMRef = ref(db, "commands/BPM/average_bpm");
+
+      // Listen for temperature changes
+      onValue(temperatureRef, (snapshot) => {
+        console.log("Temperature snapshot:", snapshot.val());
+        if (snapshot.exists()) {
+          const temperature = snapshot.val();
+          updateTemperature(temperature);
+        } else {
+          console.error("Temperature data does not exist!");
+        }
+      }, (error) => {
+        console.error("Error reading temperature data:", error);
+      });
+
+      function updateTemperature(temperature) {
+        // If your DB can go up to 50, consider raising maxTemperature
+        const maxTemperature = 40;
+        const minTemperature = 0;
+
+        // Display the updated temperature
+        const temperatureDisplay = document.getElementById("temperature");
+        temperatureDisplay.innerText = temperature.toFixed(1);
+
+        // Update temperature level bar
+        const levelElement = document.getElementById("level");
+        const heightPercentage = ((temperature - minTemperature) / (maxTemperature - minTemperature)) * 100;
+        levelElement.style.height = `${Math.max(0, Math.min(heightPercentage, 100))}%`;
+
+        // Color transition
+        const redValue = Math.max(
+          0,
+          Math.min(255, 255 - (temperature - minTemperature) * (255 / (maxTemperature - minTemperature)))
+        );
+        const greenValue = Math.max(
+          0,
+          Math.min(255, (temperature - minTemperature) * (255 / (maxTemperature - minTemperature)))
+        );
+        levelElement.style.backgroundColor = `rgb(${redValue}, ${greenValue}, 0)`;
+      }
+
+      // Listen for humidity changes
+      onValue(humidityRef, (snapshot) => {
+        console.log("Humidity snapshot:", snapshot.val());
+        if (snapshot.exists()) {
+          const humidity = snapshot.val();
+          updateHumidity(humidity);
+        } else {
+          console.error("Humidity data does not exist!");
+        }
+      }, (error) => {
+        console.error("Error reading humidity data:", error);
+      });
+
+      function updateHumidity(humidity) {
+        document.getElementById("humidity").innerText = humidity.toFixed(1);
+      }
+
+      // Separate arrays for BPM and ECG
+      const maxDataPoints = 50;
+      const maxBPM = 200;
+      let bpmData = [];
+
+      const maxECG = 4095; // or any suitable max for your ECG range
+      let ecgData = [];
+
+      // Listen for ECG changes
+      onValue(ECGRef, (snapshot) => {
+        console.log("ECG snapshot:", snapshot.val());
+        if (snapshot.exists()) {
+          const ECG = snapshot.val();
+          updateECG(ECG);
+          updateECGData(ECG); // update the ECG chart data
+        } else {
+          console.error("ECG data does not exist!");
+        }
+      }, (error) => {
+        console.error("Error reading ECG data:", error);
+      });
+
+      // Listen for BPM changes
+      onValue(BPMRef, (snapshot) => {
+        console.log("BPM snapshot:", snapshot.val());
+        if (snapshot.exists()) {
+          const BPM = snapshot.val();
+          updateBPM(BPM);
+          updateBPMData(BPM); // update the BPM chart data
+        } else {
+          console.error("BPM data does not exist!");
+        }
+      }, (error) => {
+        console.error("Error reading BPM data:", error);
+      });
+
+      // Update ECG text
+      function updateECG(ECG) {
+        const ecgValueElement = document.getElementById("ecg-value");
+        ecgValueElement.textContent = ECG + " ECG";
+      }
+
+      // Update BPM text
+      function updateBPM(BPM) {
+        const bpmValueElement = document.getElementById("bpm-value");
+        bpmValueElement.textContent = BPM + " BPM";
+      }
+
+      // BPM Chart
+      const bpmCanvas = document.getElementById('heartRateCanvas');
+      const bpmCtx = bpmCanvas.getContext('2d');
+
+      function updateBPMData(BPM) {
+        bpmData.push(BPM);
+        if (bpmData.length > maxDataPoints) {
+          bpmData.shift();
+        }
+        drawBPMChart();
+      }
+
+      function drawBPMChart() {
+        const canvasWidth = bpmCanvas.width;
+        const canvasHeight = bpmCanvas.height;
+        bpmCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        // Draw grid lines
+        bpmCtx.strokeStyle = '#ddd';
+        bpmCtx.fillStyle = '#333';
+        bpmCtx.font = '12px Arial';
+        for (let i = 0; i <= maxBPM; i += 20) {
+          const y = canvasHeight - (i / maxBPM) * canvasHeight;
+          bpmCtx.beginPath();
+          bpmCtx.moveTo(0, y);
+          bpmCtx.lineTo(canvasWidth, y);
+          bpmCtx.stroke();
+          bpmCtx.fillText(i, 5, y - 5);
+        }
+
+        // Draw BPM data
+        bpmCtx.strokeStyle = '#ff0000';
+        bpmCtx.beginPath();
+        bpmData.forEach((rate, index) => {
+          const x = (canvasWidth / maxDataPoints) * index;
+          const y = canvasHeight - (rate / maxBPM) * canvasHeight;
+          if (index === 0) {
+            bpmCtx.moveTo(x, y);
+          } else {
+            bpmCtx.lineTo(x, y);
+          }
+        });
+        bpmCtx.stroke();
+      }
+
+      // ECG Chart
+      const ecgCanvas = document.getElementById('ECGCanvas');
+      const ecgCtx = ecgCanvas.getContext('2d');
+
+      function updateECGData(ECG) {
+        ecgData.push(ECG);
+        if (ecgData.length > maxDataPoints) {
+          ecgData.shift();
+        }
+        drawECGChart();
+      }
+
+      function drawECGChart() {
+        const canvasWidth = ecgCanvas.width;
+        const canvasHeight = ecgCanvas.height;
+
+        ecgCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        // Draw grid lines (up to maxECG or your chosen scale)
+        ecgCtx.strokeStyle = '#ddd';
+        ecgCtx.font = '12px Arial';
+        ecgCtx.fillStyle = '#333';
+
+        // For example, draw horizontal lines in steps of 500 if maxECG ~ 4095
+        for (let i = 0; i <= maxECG; i += 500) {
+          const y = canvasHeight - (i / maxECG) * canvasHeight;
+          ecgCtx.beginPath();
+          ecgCtx.moveTo(0, y);
+          ecgCtx.lineTo(canvasWidth, y);
+          ecgCtx.stroke();
+          ecgCtx.fillText(i, 5, y - 5);
+        }
+
+        // Draw ECG data
+        ecgCtx.strokeStyle = '#007bff';
+        ecgCtx.beginPath();
+        ecgData.forEach((val, index) => {
+          const x = (canvasWidth / maxDataPoints) * index;
+          const y = canvasHeight - (val / maxECG) * canvasHeight;
+          if (index === 0) {
+            ecgCtx.moveTo(x, y);
+          } else {
+            ecgCtx.lineTo(x, y);
+          }
+        });
+        ecgCtx.stroke();
+      }
+
+      // Clear the charts on load
+      drawBPMChart();
+      drawECGChart();
+      
+      
+    </script>
+  </body>
+</html>

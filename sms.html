@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Send SMS</title>
+</head>
+<body>
+    <h1>Send Emergency SMS</h1>
+    <input type="text" id="phoneNumber" placeholder="Enter phone number">
+    <button id="sendSmsButton">Send SMS</button>
+
+    <script>
+        document.getElementById('sendSmsButton').addEventListener('click', () => {
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const message = encodeURIComponent('Emergency message!, Contact immediately ');
+            window.location.href = `sms:${phoneNumber}?body=${message}`;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Robot</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        h1 {
+            /* font-family: 'Blinds Audience', sans-serif; Add a fallback font family */
+            font-weight: bold;
+            color: #ffffffd5; /* Semi-transparent white */
+            animation: fadeInOnce 2s ease-in-out, pulse 2s ease-in-out 2s infinite; /* Two animations */
+        }
+        h5 {
+        color: white;
+        animation: fadeInOnce 2s ease-in-out, pulse 2s ease-in-out 2s infinite; /* Two animations */
+        }
+
+        /* First animation: Fade in and scale */
+        @keyframes fadeInOnce {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Second animation: Pulse (grow bigger and smaller)
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1); /* Slightly bigger */
+            /* }
+        } */ 
+
+
+        /* Allow scrolling on smaller screens */
+        @media screen and (max-width: 1000px) {
+            body {
+                overflow:scroll !important;
+            }
+        }
+
+        body {
+            /* background-color: #f8f9fa; */
+            color: #333;
+            background-image: url('ron3.png');
+            background-size:vh; 
+            background-position: center; 
+            /* background-repeat: no-repeat;  */
+            overflow: hidden; /* Prevent scrollbars from appearing */
+
+        }
+        .navbar {
+            background-color: green;
+        }
+        .navbar-brand {
+            color: #fff;
+            font-weight: bold;
+        }
+        .navbar-nav .nav-link {
+            color: #fff;
+        }
+        .navbar-nav .nav-link:hover {
+            color: black !important;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 20px 10px;
+            background-color: rgba(26, 212, 29, 0)!important;
+        }
+        .cards-section {
+            padding: 10px;
+        }
+        /* .cards-section:hover{
+            transform: scale(1.1);
+        } */
+        .card:hover {
+            transform: scale(1.1); /* Enlarges the hovered card */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .card-body h5 {
+            color: #007bff;
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            background-color: green;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://matias.me/nsfw/">Yellow-Vortex<img src = logo.png height="50" width="70" /></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">| Sign In <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="signup.html">| Sign Up <i class="fa-solid fa-user-plus"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">| About <i class="fa-regular fa-address-card"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero-section bg-light">
+        <h1>Welcome to Yellow-Vortex assistance</h1>
+        <h5>Our robot helps monitor your health and provides real-time assistance.</h5>
+    </div>
+
+    <div class="container cards-section">
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="card">
+                    <img src="heart vital.jpg" class="card-img-top" alt="Vital Monitoring">
+                    <div class="card-body">
+                        <h4 class="card-title">Vital Monitoring</h4>
+                        <p class="card-text">Track real-time vitals like heart rate, temperature, and blood pressure.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <div class="card">
+                    <img src="alert.jpg" class="card-img-top" alt="Alerts & Notifications">
+                    <div class="card-body">
+                        <h4 class="card-title">Alerts & Notifications</h4>
+                        <p class="card-text">Get notified immediately when abnormal vitals are detected.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <div class="card">
+                    <img src="help.jpg" class="card-img-top" alt="Patient Assistance">
+                    <div class="card-body">
+                        <h4 class="card-title">Patient Assistance</h4>
+                        <p class="card-text">Provide voice or button-activated assistance for emergency situations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2024 Yellow-Vortex. All rights reserved.</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC59vWDbdtLqfRTlqQWpdrrt2Eia36PqH8",
+            authDomain: "yellow-vortex.firebaseapp.com",
+            databaseURL: "https://yellow-vortex-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "yellow-vortex",
+            storageBucket: "yellow-vortex.firebasestorage.app",
+            messagingSenderId: "1007464214882",
+            appId: "1:1007464214882:web:c1e7b0e1a266309b94bc3b",
+            measurementId: "G-V76FRQK0FR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
