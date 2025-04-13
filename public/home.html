@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yellow-Vortex Dashboard</title>
+    <link rel="icon" type="image/png+xml" href="logo.png" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
             color: #333;
+            background-image: url('ron3.png');
         }
         .navbar {
-            background-color: green;
+            background-color: green !important;
             position: sticky;
             top: 0;
             width:100%;
@@ -29,18 +30,30 @@
             font-size: 15px;
         }
         .cards-section, .dashboard-section {
-            padding: 20px;
-            margin-top: 20px;
+            padding: 10px;
             font-size: 20px;
+            
+        }
+        .cards-section {
+            margin-bottom: 50px !important;
         }
         .card {
             margin: 20px 0;
         }
+        .card {
+        background-color: rgba(255, 255, 255, 0.9); /* white with 70% opacity */
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
         .card-body h5 {
             color: #007bff;
         }
+        .hero-section h1,
+        .hero-section h5 {
+           color: rgb(255, 255, 255) !important; /* semi-transparent text */
+        }
         .dashboard-overview {
-            background-color: #e9ecef;
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
@@ -48,6 +61,8 @@
         .dashboard-overview h4 {
             color: #007bff;
         }
+
+
         footer {
             text-align: center;
             padding: 15px;
@@ -59,7 +74,7 @@
             margin-top: 10px;
             font-style: italic;
             flex-direction: column;
-            color: #555;
+            color: #000000;
             /* font-size: larger; */
             font-size: 20px;
             /* position: relative; */
@@ -111,42 +126,94 @@
             }
         }
 
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff !important;
+        }
+
+        .nav-link {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #fff !important;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #d4edda !important; /* Light green hover effect */
+        }
+
+        .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-menu {
+            background-color: green; /* Light background color */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        .dropdown-item {
+            font-size: 1rem;
+            font-weight: 500;
+            color: white; /* Default text color */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: #d4edda; /* Light green hover effect */
+            color: black; /* Dark green text on hover */
+        }
+
+        .dropdown-divider {
+            border-color: #ccc; /* Divider color */
+        }
 
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Yellow-Vortex<img src = logo.png height="50" width="70" /></a>
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="logo.png" alt="Yellow-Vortex Logo" height="50" width="70" class="me-2">
+                <span class="fw-bold">Yellow-Vortex</span>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="profile.html">| Profile <i class="fa-regular fa-address-card"></i> |</a>
+                        <a class="nav-link" href="medication.html">Medication <i class="fa-solid fa-syringe"></i></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="medication.html">| Medication <i class="fa-solid fa-syringe"></i> |</a>
+                        <a class="nav-link" href="managmet.html">Management <i class="fa-solid fa-folder-plus"></i></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="managmet.html">| Management <i class="fa-solid fa-folder-plus"></i> |</a>
+                        <a class="nav-link" href="appointments.html">Appointments <i class="fa-regular fa-calendar-check"></i></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="appointments.html">| Appointments <i class="fa-regular fa-calendar-check"></i> | </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="logout.html">Logout  <i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            More
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="profile.html">Profile <i class="fa-solid fa-user"></i></a></li>
+                            <li><a class="dropdown-item" href="chat.html">Chats <i class="fa-solid fa-comments"></i></a></li>
+                            <li><a class="dropdown-item" href="health-Report.html">Reports <i class="fa-solid fa-file-medical"></i></a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="logout.html">Logout <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="hero-section bg-light">
-        <h1>Welcome, <script>document.write(localStorage.getItem('userName'))</script></h1>
-        <p>Access your dashboard to monitor health, alerts, and more.</p>
+    <div class="hero-section">
+        <h1 id="welcomeMessage">Welcome, Guest</h1>
+        <h5>Access your dashboard to monitor health, alerts, and more.</h5>
     </div>
 
     <div class="container dashboard-section">
@@ -176,10 +243,10 @@
                     <div class="card-body dataRead">
                         <div>
                             <h5 class="card-title">Latest Reading</h5>
-                            <p><strong>Heart Rate:</strong> <span id="heartRate1">--</span> BPM</p>
-                            <p><strong>ECG:</strong> <span id="ecg1">--</span> mV</p>
+                            <p><strong style="font-weight: bold; color: black;">Heart Rate:</strong> <span id="heartRate1" style="font-weight: bold; color: black;">--</span> BPM</p>
+                            <p><strong style="font-weight: bold; color: black;">ECG:</strong> <span id="ecg1" style="font-weight: bold; color: black;">--</span> mV</p>
                             <p class="card-comments" style="font-weight: bold; color: black;">
-                                <div>Doctor's Comments: <span id="comment1">Awaiting update...</span></div>
+                                <div style="font-weight: bold; color: black;">Doctor's Comments: <span id="comment1">Awaiting update...</span></div>
                             </p>
                         </div>
                         <div>
@@ -195,7 +262,7 @@
 
 
     <footer style="position: fixed; bottom: 0;">
-        <p>© 2024 Yellow-Vortex. All rights reserved.</p>
+        <p>© 2025 Yellow-Vortex. All rights reserved.</p>
     </footer>
 
     <script type="module">
@@ -204,6 +271,30 @@
 
         let lastBPM = 0;
         let lastECG = 0;
+        async function fetchUsername() {
+            try {
+                // Get the userId from localStorage
+                const userId = localStorage.getItem('userId');
+                if (!userId) {
+                    console.warn('No userId found in localStorage.');
+                    document.querySelector('.hero-section h1').innerText = "Welcome, Guest";
+                    return;
+                }
+
+                // Fetch the user's data from Firebase
+                const response = await fetch(`https://yellow-vortex-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}.json`);
+                const data = await response.json();
+
+                console.log('Fetched user data:', data); // Debugging log
+
+                // Update the welcome message with the user's name
+                const username = data && data.fullName ? data.fullName : "Guest";
+                document.querySelector('.hero-section h1').innerText = `Welcome, ${username}`;
+            } catch (error) {
+                console.error('Error fetching username:', error);
+                document.querySelector('.hero-section h1').innerText = "Welcome, Guest";
+            }
+        }
 
         // Function to fetch ECG data from Firebase
         async function fetchECGData() {
@@ -278,6 +369,7 @@
 
         // Initial data load
         fetchLatestReadings();
+        fetchUsername(); 
 
     </script>
     

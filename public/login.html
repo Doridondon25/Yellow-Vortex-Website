@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="icon" type="image/png+xml" href="logo.png" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -14,7 +15,6 @@
         background-image: url('ron3.png');
         background-size:vh; 
         background-position: center; 
-        background-repeat: no-repeat; 
     }
     .navbar {
         background-color: green;
@@ -99,13 +99,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">| Home <i class="fa-solid fa-house"></i></a>
+                        <a class="nav-link" href="index.html">| Home <i class="fa-solid fa-house"> | </i></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="signup.html">| Sign Up <i class="fa-solid fa-user-plus"></i></a>
+                        <a class="nav-link" href="signup.html">| Sign Up <i class="fa-solid fa-user-plus"> | </i></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="about.html">| About <i class="fa-regular fa-address-card"></i></a>
+                        <a class="nav-link" href="about.html">| About <i class="fa-regular fa-address-card"> | </i></a>
                     </li>
                 </ul>
             </div>
@@ -121,32 +121,31 @@
                 </div>
                 <div class="mb-3">
                     <label for="loginPassword" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
+                        <span class="input-group-text" id="togglePassword" style="cursor: pointer;">
+                            <i class="fa-solid fa-eye"></i>
+                        </span>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
             <p class="form-text">Don't have an account? <a href="signup.html">Sign up here</a></p>
         </div>
         <footer class="text-center mt-5">
-            <p>© 2024 Robot Control. All rights reserved.</p>
+            <p>© 2025 Robot Control. All rights reserved.</p>
         </footer>
     </div>
-
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
     <script type="module">
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-        import { getDatabase, ref, get, set} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyC59vWDbdtLqfRTlqQWpdrrt2Eia36PqH8",
-            authDomain: "yellow-vortex.firebaseapp.com",
-            databaseURL: "https://yellow-vortex-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "yellow-vortex",
-            storageBucket: "yellow-vortex.firebasestorage.app",
-            messagingSenderId: "1007464214882",
-            appId: "1:1007464214882:web:c1e7b0e1a266309b94bc3b",
-            measurementId: "G-V76FRQK0FR"
-        };
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { firebaseConfig } from "./js/firebase-config.js"; // Import the config
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -168,20 +167,30 @@
 
                 if (snapshot.exists()) {
                     const userData = snapshot.val();
-                    const userName = userData.fullName; 
+                    const userName = userData.fullName;
                     const updatedIsConnect = "1";
-                    const userRef = ref(database, 'users/' + user.uid);
                     set(userRef, {
                         ...userData, // Keep existing user data
                         isConnect: updatedIsConnect // Update the isConnect field
-                    });                 
+                    });
                     localStorage.setItem('userId', user.uid);
                     localStorage.setItem('userEmail', user.email);
                     localStorage.setItem('userName', userName);
-                    localStorage.setItem('userProductId', userData.productId); 
+                    localStorage.setItem('userProductId', userData.productId);
                     localStorage.setItem('emergencyContactNumber', userData.emergencyContactNumber);
                     localStorage.setItem('isConnect', userData.isConnect);
 
+                    const firestore = getFirestore();
+                    const userDocRef = doc(firestore, "users", user.uid);
+                    const userDoc = await getDoc(userDocRef);
+
+                    if (!userDoc.exists()) {
+                        await setDoc(userDocRef, {
+                            uid: user.uid,
+                            fullName: userName,
+                            email: user.email
+                        });
+                    }
 
                     window.location.href = "loading.html";
                 } else {
@@ -190,6 +199,20 @@
             } catch (error) {
                 alert("Error: " + error.message);
             }
+        });
+
+        // Toggle password visibility
+        const togglePassword = document.getElementById("togglePassword");
+        const passwordField = document.getElementById("loginPassword");
+
+        togglePassword.addEventListener("click", function () {
+            const type = passwordField.type === "password" ? "text" : "password";
+            passwordField.type = type;
+
+            // Toggle the eye icon
+            this.innerHTML = type === "password" 
+                ? '<i class="fa-solid fa-eye"></i>' 
+                : '<i class="fa-solid fa-eye-slash"></i>';
         });
     </script>
 

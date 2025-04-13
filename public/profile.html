@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Profile</title>
+  <link rel="icon" type="image/png+xml" href="logo.png" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
@@ -16,16 +17,71 @@
       background-size: cover;
       background-position: center;
     }
+    /* Navbar Styling */
     .navbar {
-      background-color: green;
+      background-color: green !important;
     }
+  
     .navbar-brand {
-      color: #fff;
+      font-size: 1.5rem;
       font-weight: bold;
+      color: #fff !important;
+      display: flex;
+      align-items: center;
     }
+  
+    .navbar-brand img {
+      margin-right: 10px;
+    }
+  
     .navbar-nav .nav-link {
-      color: #fff;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #fff !important;
+      transition: color 0.3s ease;
     }
+  
+    .navbar-nav .nav-link:hover {
+      color: #d4edda !important; /* Light green hover effect */
+      text-decoration: underline;
+    }
+  
+    .navbar-toggler {
+      border: none;
+    }
+  
+    .navbar-toggler-icon {
+      background-color: transparent; /* Transparent background */
+      font-size: 1.5rem; /* Ensure the icon is large enough */
+      color: white; /* Ensure the icon is white */
+      content: "\f0c9"; /* Font Awesome hamburger icon code */
+    }
+    .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-menu {
+            background-color: green; /* Light background color */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        .dropdown-item {
+            font-size: 1rem;
+            font-weight: 500;
+            color: white; /* Default text color */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: #d4edda; /* Light green hover effect */
+            color: black; /* Dark green text on hover */
+        }
+
+        .dropdown-divider {
+            border-color: #ccc; /* Divider color */
+        }
     .profile-section {
       padding: 50px 30px;
       flex: 1;
@@ -87,35 +143,41 @@
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-        Yellow-Vortex
-        <img src="logo.png" height="50" width="70" alt="Logo" />
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
-          <li class="nav-item">
-            <a class="nav-link" href="medication.html">| Medication <i class="fa-solid fa-syringe"></i> |</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="managmet.html">| Management <i class="fa-solid fa-folder-plus"></i> |</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="appointments.html">| Appointments <i class="fa-regular fa-calendar-check"></i> |</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="logout.html">| Logout <i class="fa-solid fa-arrow-right-from-bracket"></i></a>
-          </li>
-        </ul>
-      </div>
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="logo.png" alt="Yellow-Vortex Logo" height="50" width="70" class="me-2">
+            <span class="fw-bold">Yellow-Vortex</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="home.html">Home <i class="fa-solid fa-house"></i></a>
+                <li class="nav-item">
+                    <a class="nav-link" href="managmet.html">Management <i class="fa-solid fa-folder-plus"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="appointments.html">Appointments <i class="fa-regular fa-calendar-check"></i></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        More
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="medication.html">Medication <i class="fa-solid fa-syringe"></i></a></li>
+                        <li><a class="dropdown-item" href="chat.html">Chats <i class="fa-solid fa-comments"></i></a></li>
+                        <li><a class="dropdown-item" href="health-Report.html">Reports <i class="fa-solid fa-file-medical"></i></a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="logout.html">Logout <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
     </div>
-  </nav>
+</nav>
 
   <div class="alert alert-success" id="successAlert">
     Profile updated successfully!
@@ -164,7 +226,7 @@
   </div>
 
   <footer>
-    <p>© 2024 Yellow-Vortex. All rights reserved.</p>
+    <p>© 2025 Yellow-Vortex. All rights reserved.</p>
   </footer>
 
   <script type="module">
@@ -173,17 +235,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
     import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyC59vWDbdtLqfRTlqQWpdrrt2Eia36PqH8",
-      authDomain: "yellow-vortex.firebaseapp.com",
-      databaseURL: "https://yellow-vortex-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "yellow-vortex",
-      storageBucket: "yellow-vortex.firebasestorage.app",
-      messagingSenderId: "1007464214882",
-      appId: "1:1007464214882:web:c1e7b0e1a266309b94bc3b",
-      measurementId: "G-V76FRQK0FR"
-    };
+    import { firebaseConfig } from "./js/firebase-config.js"; 
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth();

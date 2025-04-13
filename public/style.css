@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap'); 
 
 * {
     margin: 0;
@@ -11,7 +11,8 @@ html, body {
     display: grid;
     height: 100%;
     place-items: center;
-    background: linear-gradient(to bottom, #b3ffab, #12ffa0); 
+    /* background: linear-gradient(to bottom, #13a403, #285838);  */
+    background-image: url("ron3.png");
 }
 
 .container {

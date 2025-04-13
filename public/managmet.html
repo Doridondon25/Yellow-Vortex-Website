@@ -2,8 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Robot Control Panel</title>
+    <link rel="icon" type="image/png+xml" href="logo.png" />
 
     <!-- Bootstrap CSS -->
     <link
@@ -34,20 +35,76 @@
         background-image: url('ron3.png'); /* Replace with your image path */
       }
 
-      /* Navbar */
-      .navbar {
-        background-color: green;
-      }
-      .navbar-brand {
-        color: #fff;
-        font-weight: bold;
-      }
-      .navbar-nav .nav-link {
-        color: #fff;
-      }
-      .navbar-nav .nav-link:hover {
-        color: black !important;
-      }
+    /* Navbar Styling */
+    .navbar {
+      background-color: green !important;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1030; /* Ensure it stays above other elements */
+    }
+  
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff !important;
+      display: flex;
+      align-items: center;
+    }
+  
+    .navbar-brand img {
+      margin-right: 10px;
+    }
+  
+    .navbar-nav .nav-link {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #fff !important;
+      transition: color 0.3s ease;
+    }
+  
+    .navbar-nav .nav-link:hover {
+      color: #d4edda !important; /* Light green hover effect */
+      text-decoration: underline;
+    }
+  
+    .navbar-toggler {
+      border: none;
+    }
+  
+    .navbar-toggler-icon {
+      background-color: transparent; /* Transparent background */
+      font-size: 1.5rem; /* Ensure the icon is large enough */
+      color: white; /* Ensure the icon is white */
+      content: "\f0c9"; /* Font Awesome hamburger icon code */
+    }
+    .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-menu {
+            background-color: green; /* Light background color */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        .dropdown-item {
+            font-size: 1rem;
+            font-weight: 500;
+            color: white; /* Default text color */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: #d4edda; /* Light green hover effect */
+            color: black; /* Dark green text on hover */
+        }
+
+        .dropdown-divider {
+            border-color: #ccc; /* Divider color */
+        }
+
 
       /* Main title */
       h1 {
@@ -184,46 +241,41 @@
       </script>
     </h1>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-          Yellow-Vortex
-          <img src="logo.png" height="50" width="70" alt="Logo"/>
-        </a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="profile.html">Profile</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="medication.html">Medication</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="home.html">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="appointments.html">Appointments</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="logout.html">Logout</a>
-            </li>
-          </ul>
-        </div>
+          <a class="navbar-brand d-flex align-items-center" href="#">
+              <img src="logo.png" alt="Yellow-Vortex Logo" height="50" width="70" class="me-2">
+              <span class="fw-bold">Yellow-Vortex</span>
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav ms-auto">
+                  <li class="nav-item">
+                      <a class="nav-link" href="home.html">Home <i class="fa-solid fa-house"></i></a>
+                  <li class="nav-item">
+                    <a class="nav-link" href="medication.html">Medication <i class="fa-solid fa-syringe"></i></a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="appointments.html">Appointments <i class="fa-regular fa-calendar-check"></i></a>
+                  </li>
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          More
+                      </a>
+                      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="profile.html">Profile <i class="fa-solid fa-user"></i></a></li>
+                          <li><a class="dropdown-item" href="chat.html">Chats <i class="fa-solid fa-comments"></i></a></li>
+                          <li><a class="dropdown-item" href="health-Report.html">Reports <i class="fa-solid fa-file-medical"></i></a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="logout.html">Logout <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
+                      </ul>
+                  </li>
+              </ul>
+          </div>
       </div>
-    </nav>
+  </nav>
 
     <!-- Container for the cards -->
     <div class="container mt-5">
@@ -377,6 +429,10 @@
     <!-- Bootstrap Bundle JS (for navbar toggle, etc.) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
+     <!-- Add TensorFlow.js and a human detection model -->
+     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+ 
     <!-- Your JavaScript (type="module") -->
     <script type="module">
       import { checkIsConnect } from "./auth-check.js";
@@ -390,19 +446,8 @@
       } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+      import { firebaseConfig } from "./js/firebase-config.js"; 
 
-      // Firebase config
-      const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "yellow-vortex.firebaseapp.com",
-        databaseURL:
-          "https://yellow-vortex-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "yellow-vortex",
-        storageBucket: "yellow-vortex.firebasestorage.app",
-        messagingSenderId: "1007464214882",
-        appId: "1:1007464214882:web:c1e7b0e1a266309b94bc3b",
-        measurementId: "G-V76FRQK0FR"
-      };
 
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
@@ -423,9 +468,21 @@
           console.error("Error fetching IP address:", error);
         }
       }
+        // Function to check if the image contains a human
+        async function checkForHuman(imageElement) {
+        const model = await cocoSsd.load();
+        const predictions = await model.detect(imageElement);
 
-      // Set up the video stream
-      let videoStreamURL = "";
+        const humanDetected = predictions.some(prediction => prediction.class === 'person');
+        if (humanDetected) {
+          console.log('Human detected in the image.');
+        } else {
+          console.log('No human detected in the image.');
+        }
+      }
+
+     // Set up the video stream and check for human
+     let videoStreamURL = "";
       async function setupImageStream() {
         try {
           const ipAddress = await getIPAddress();
@@ -433,11 +490,15 @@
             console.error("Failed to fetch IP address.");
             return;
           }
-          // Example usage:
-          // videoStreamURL = `http://${ipAddress}:81/stream`;
-          // Hard-coded fallback or example:
-          videoStreamURL = "http://10.0.0.10:81/stream";
-          document.getElementById("stream").src = videoStreamURL;
+          videoStreamURL = `http://${ipAddress}:81/stream`;
+          const streamElement = document.getElementById("stream");
+          streamElement.src = videoStreamURL;
+
+          // Check for human in the image after it loads
+// Check for human in the image every second after it loads
+          streamElement.onload = () => {
+            setInterval(() => checkForHuman(streamElement), 1000);
+          };
         } catch (error) {
           console.error("Error setting up image stream:", error);
         }

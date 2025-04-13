@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diseases Information</title>
+  <link rel="icon" type="image/png+xml" href="logo.png" />
+  
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      background-color: rgba(0, 128, 0, 0.2);
+      font-family: Arial, sans-serif;
+    }
+
+    .navbar {
+      background-color: green;
+    }
+
+    .navbar-brand,
+    .nav-link {
+      color: #ffffff;
+    }
+
+    .nav-link:hover {
+      color: #000;
+    }
+
+    .header-section {
+      background-image: url('hospital-banner.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000000;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .header-section::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .header-section h1 {
+      font-size: 2.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      margin-bottom: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 16px rgba(0, 128, 0, 0.2);
+    }
+
+    .card-title i {
+      font-size: 1.3rem;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    footer {
+      background-color: green;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .scroll-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: green;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      display: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">
+        Yellow-Vortex <img src="logo.png" height="50" width="70" alt="Logo" />
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="home.html">| Home |</a></li>
+          <li class="nav-item"><a class="nav-link" href="profile.html">| Profile |</a></li>
+          <li class="nav-item"><a class="nav-link" href="medication.html">| Medication |</a></li>
+          <li class="nav-item"><a class="nav-link" href="managmet.html">| Management |</a></li>
+          <li class="nav-item"><a class="nav-link" href="appointments.html">| Appointments |</a></li>
+          <li class="nav-item"><a class="nav-link" href="logout.html">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header Section -->
+  <div class="header-section">
+    <h1>Common Diseases &amp; Conditions</h1>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container my-5">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h4 class="card-title"><i class="fas fa-syringe text-danger"></i>Diabetes Mellitus</h4>
+            <p class="card-text">Diabetes is a chronic condition characterized by elevated blood sugar levels. It occurs when the body either cannot produce enough insulin or cannot effectively use the insulin produced.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h4 class="card-title"><i class="fas fa-heart-pulse text-danger"></i>Hypertension</h4>
+            <p class="card-text">Also known as high blood pressure, hypertension is a condition in which the blood vessels are persistently under high pressure. If left unmanaged, it can lead to severe cardiovascular complications.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h4 class="card-title"><i class="fas fa-lungs text-primary"></i>Asthma</h4>
+            <p class="card-text">Asthma is a chronic respiratory condition that causes inflammation and narrowing of the airways. Symptoms include wheezing, shortness of breath, chest tightness, and coughing.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h4 class="card-title"><i class="fas fa-head-side-mask text-warning"></i>Influenza (Flu)</h4>
+            <p class="card-text">Influenza is a contagious respiratory illness caused by influenza viruses. It can result in mild to severe illness, and its complications can be particularly dangerous for the elderly and those with chronic conditions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h4 class="card-title"><i class="fas fa-virus text-dark"></i>COVID-19</h4>
+            <p class="card-text">COVID-19 is an infectious disease caused by the SARS-CoV-2 virus. It has led to a global pandemic, affecting millions of people worldwide and prompting extensive public health measures.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h4 class="card-title"><i class="fas fa-head-side-cough text-muted"></i>Pneumonia</h4>
+            <p class="card-text">Pneumonia is an infection that inflames the air sacs in one or both lungs, which may fill with fluid or pus. It can be caused by bacteria, viruses, or fungi, and is particularly dangerous for young children and the elderly.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h4 class="card-title"><i class="fas fa-heartbeat text-danger"></i>Heart Disease</h4>
+            <p class="card-text">Heart disease encompasses a range of conditions affecting the heart, including coronary artery disease, arrhythmias, and congenital heart defects. It remains one of the leading causes of death globally.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h4 class="card-title"><i class="fas fa-lungs-virus text-primary"></i>Chronic Obstructive Pulmonary Disease (COPD)</h4>
+            <p class="card-text">COPD is a progressive lung disease that makes it hard to breathe. It is primarily caused by long-term exposure to irritating gases or particulate matter, most often from cigarette smoke.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll to Top Button -->
+  <div class="scroll-top" onclick="scrollToTop()">↑</div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Yellow-Vortex. All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const scrollBtn = document.querySelector(".scroll-top");
+
+    window.addEventListener("scroll", () => {
+      scrollBtn.style.display = window.scrollY > 300 ? "block" : "none";
+    });
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  </script>
+</body>
+</html>
