@@ -6,8 +6,6 @@
   <title>Doctor Appointment Booking</title>
   <link rel="icon" type="image/png+xml" href="logo.png" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     /* General Body Styling */
@@ -239,6 +237,76 @@
       z-index: 1000;
       display: none;
     }
+    .btn {
+  background-color: #28a745;
+  color: white;
+  padding: 14px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn:hover {
+  background-color: #218838;
+  transform: scale(1.02);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+}
+
+#BookButton {
+  background-color: #28a745;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 10px;
+}
+
+#BookButton:active {
+  transform: scale(0.98);
+}
+
+/* Add to your existing style section */
+.appointment-option {
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.appointment-option:hover {
+    background-color: #f8f9fa;
+}
+
+.appointment-option .form-check-label {
+    cursor: pointer;
+    width: 100%;
+    padding: 10px;
+}
+
+.badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 0.7em;
+    padding: 0.35em 0.65em;
+}
+
+/* Add to your existing style section */
+#updateAppointments {
+    background-color: #ffc107;
+    color: #000;
+    font-weight: 600;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+#updateAppointments:hover {
+    background-color: #ffb300;
+    transform: scale(1.02);
+}
+
+#updateAppointments:active {
+    transform: scale(0.98);
+}
   </style>
   
 </head>
@@ -292,37 +360,25 @@
         <input type="text" class="form-control" id="date" placeholder="Select Date" readonly required>
       </div>
       <div class="mb-4">
-        <label for="time" class="form-label">Preferred Time</label>
-        <select class="form-control" id="time" required>
-          <option value="time1">9:00</option>
-          <option value="time2">10:00</option>
-          <option value="time3">12:00</option>
-          <option value="time4">13:00</option>
-        </select>
+        <label for="time" class="form-label">Appointment Time</label>
+        <input type="text" class="form-control" id="time" readonly required>
       </div>
       <div class="mb-4">
-        <label for="doctor" class="form-label">Choose Doctor</label>
-        <select class="form-control" id="doctor" required>
-          <option value="">Select a doctor</option>
-          <option value="drsmith">Dr. Smith</option>
-          <option value="drjones">Dr. Jones</option>
-          <option value="drlee">Dr. Lee</option>
-        </select>
+        <label for="doctor" class="form-label">Doctor</label>
+        <input type="text" class="form-control" id="doctor" readonly required>
       </div>
       <div class="mb-4">
-        <label for="location" class="form-label">Choose Location</label>
-        <select class="form-control" id="location" required>
-          <option value="">Select a location</option>
-          <option value="clinic1">Tel Aviv</option>
-          <option value="clinic2">Haifa</option>
-          <option value="clinic3">Hod Hasaron</option>
-        </select>
+        <label for="location" class="form-label">Location</label>
+        <input type="text" class="form-control" id="location" readonly required>
       </div>
       <button type="submit" id="BookButton" class="btn w-100">Book Appointment</button>
     </form>
     <div id="confirmation" class="alert alert-success mt-4 d-none" role="alert">
       Your appointment has been successfully booked!
     </div>
+    <button id="updateAppointments" class="btn btn-warning mt-4 w-100">
+        <i class="fas fa-sync-alt me-2"></i> Update Appointments List
+    </button>
   </div>
 
   <!-- Date Picker Popup -->
@@ -349,83 +405,265 @@
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+    import { firebaseConfig, updateAppointmentsList, db } from './js/firebase-config.js';
+
+
+    const dateField = document.getElementById("date");
     const datePicker = document.getElementById("datePicker");
     const overlay = document.getElementById("overlay");
     const calendar = document.getElementById("calendar");
-    const dateField = document.getElementById("date");
     const calendarHeader = document.getElementById("calendarHeader");
+    const appointmentForm = document.getElementById("appointmentForm");
 
+    // Calendar state
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
 
-    dateField.addEventListener('click', openDatePicker);
+    // Event Listeners
+    dateField.addEventListener("click", openDatePicker);
+    overlay.addEventListener("click", closeDatePicker);
+
+    appointmentForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const formData = {
+            date: dateField.value,
+            time: document.getElementById("time").value,
+            doctor: document.getElementById("doctor").value,
+            location: document.getElementById("location").value,
+            occupied: true,
+            userId: localStorage.getItem('userId') // Add user ID to track who booked it
+        };
+        
+        try {
+            // Generate a unique ID for the new appointment
+            const newAppointmentId = `appointment_${Date.now()}`;
+            
+            // Add the new appointment to Firebase
+            await set(ref(db, `Appointments/${newAppointmentId}`), formData);
+            
+            // Show success message
+            showToast("Appointment booked successfully!");
+            
+            // Clear the form
+            appointmentForm.reset();
+            
+            // Refresh the calendar
+            populateCalendar(currentMonth, currentYear);
+            
+        } catch (error) {
+            console.error("Error booking appointment:", error);
+            showToast("Failed to book appointment", "danger");
+        }
+    });
+
+    async function populateCalendar(month, year) {
+        calendar.innerHTML = "";
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        calendarHeader.textContent = `${monthNames[month]} ${year}`;
+
+        try {
+            const snapshot = await get(ref(db, "Appointments"));
+            const appointments = snapshot.exists() ? snapshot.val() : {};
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayDiv = document.createElement("div");
+                dayDiv.textContent = i;
+                
+                const currentDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`;
+                const availableAppointments = Object.values(appointments)
+                    .filter(apt => apt.date === currentDate && !apt.occupied);
+
+                if (availableAppointments.length > 0) {
+                    // Green styling for available appointments
+                    dayDiv.style.backgroundColor = "#d1e7dd";
+                    dayDiv.style.color = "#0f5132";
+                    dayDiv.dataset.appointments = availableAppointments.length;
+                    dayDiv.innerHTML += `<span class="badge bg-success">${availableAppointments.length}</span>`;
+                    dayDiv.onclick = () => selectDate(i, month, year);
+                } else {
+                    // Red styling for no appointments
+                    dayDiv.style.backgroundColor = "#f8d7da";
+                    dayDiv.style.color = "#842029";
+                    dayDiv.style.cursor = "not-allowed";
+                    dayDiv.title = "No available appointments";
+                }
+
+                calendar.appendChild(dayDiv);
+            }
+        } catch (error) {
+            console.error("Error fetching appointments:", error);
+        }
+    }
+
+    async function selectDate(day, month, year) {
+        const selectedDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+        
+        try {
+            const snapshot = await get(ref(db, "Appointments"));
+            if (snapshot.exists()) {
+                const appointments = snapshot.val();
+                const availableAppointments = Object.entries(appointments)
+                    .filter(([_, apt]) => apt.date === selectedDate && !apt.occupied)
+                    .map(([id, apt]) => ({id, ...apt}));
+
+                if (availableAppointments.length > 0) {
+                    if (availableAppointments.length === 1) {
+                        // Single appointment available
+                        const apt = availableAppointments[0];
+                        dateField.value = selectedDate;
+                        document.getElementById("time").value = apt.time;
+                        document.getElementById("doctor").value = apt.doctor;
+                        document.getElementById("location").value = apt.location;
+                        closeDatePicker();
+                    } else {
+                        // Multiple appointments available
+                        showAppointmentModal(availableAppointments, selectedDate);
+                    }
+                } else {
+                    showToast("No available appointments for this date", "warning");
+                }
+            } else {
+                showToast("No appointments found", "warning");
+            }
+        } catch (error) {
+            console.error("Error checking appointments:", error);
+            showToast("Error checking appointments", "danger");
+        }
+    }
+
+    function showAppointmentModal(appointments, selectedDate) {
+        const list = document.getElementById("appointmentsList");
+        list.innerHTML = appointments.map((apt, index) => `
+            <div class="appointment-option p-3 ${index > 0 ? 'border-top' : ''}" data-id="${apt.id}">
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="appointmentOption" 
+                           value="${apt.id}" id="apt${apt.id}">
+                    <label class="form-check-label" for="apt${apt.id}">
+                        <strong>Time:</strong> ${apt.time}<br>
+                        <strong>Doctor:</strong> ${apt.doctor}<br>
+                        <strong>Location:</strong> ${apt.location}
+                    </label>
+                </div>
+            </div>
+        `).join('');
+
+        // Add confirmation button
+        list.innerHTML += `
+            <div class="p-3 border-top">
+                <button onclick="window.selectAppointmentOption('${selectedDate}')" 
+                        class="btn btn-success w-100">Confirm Selection</button>
+            </div>
+        `;
+
+        const modal = new bootstrap.Modal(document.getElementById('appointmentModal'));
+        modal.show();
+    }
+
+    function showToast(message, type = "success") {
+        const toast = document.getElementById("toast");
+        toast.querySelector(".toast-body").textContent = message;
+        toast.className = `toast align-items-center text-bg-${type} border-0 position-fixed top-0 end-0 p-3`;
+        toast.style.display = "block";
+        setTimeout(() => toast.style.display = "none", 3000);
+    }
 
     function openDatePicker() {
-      populateCalendar(currentMonth, currentYear);
-      datePicker.style.display = "flex";
-      overlay.style.display = "block";
+        populateCalendar(currentMonth, currentYear);
+        datePicker.style.display = "flex";
+        overlay.style.display = "block";
     }
 
     function closeDatePicker() {
-      datePicker.style.display = "none";
-      overlay.style.display = "none";
+        datePicker.style.display = "none";
+        overlay.style.display = "none";
     }
 
     function changeMonth(direction) {
-      currentMonth += direction;
-      if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
-      } else if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-      }
-      populateCalendar(currentMonth, currentYear);
+        currentMonth += direction;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        } else if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        populateCalendar(currentMonth, currentYear);
     }
 
-    function populateCalendar(month, year) {
-      calendar.innerHTML = "";
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-      ];
-      calendarHeader.textContent = `${monthNames[month]} ${year}`;
+    // Make functions available globally
+    window.changeMonth = changeMonth;
+    window.closeDatePicker = closeDatePicker;
+    window.selectAppointmentOption = function(selectedDate) {
+        const selected = document.querySelector('input[name="appointmentOption"]:checked');
+        if (!selected) {
+            showToast("Please select an appointment", "warning");
+            return;
+        }
 
-      for (let i = 1; i <= daysInMonth; i++) {
-        const dayDiv = document.createElement('div');
-        dayDiv.textContent = i;
-        dayDiv.onclick = () => selectDate(i, month, year);
-        calendar.appendChild(dayDiv);
-      }
-    }
+        const appointmentDiv = document.querySelector(`[data-id="${selected.value}"]`);
+        if (!appointmentDiv) {
+            showToast("Error: Appointment not found", "danger");
+            return;
+        }
 
-    function selectDate(day, month, year) {
-      dateField.value = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      closeDatePicker();
-    }
+        const labelText = appointmentDiv.querySelector('label').innerText;
+        const timeMatch = labelText.match(/Time: (.+?)\n/);
+        const doctorMatch = labelText.match(/Doctor: (.+?)\n/);
+        const locationMatch = labelText.match(/Location: (.+?)(\n|$)/);
 
-    document.getElementById("appointmentForm").addEventListener("submit", function (event) {
-      event.preventDefault();
-      showToast();
+        if (timeMatch && doctorMatch && locationMatch) {
+            dateField.value = selectedDate;
+            document.getElementById("time").value = timeMatch[1].trim();
+            document.getElementById("doctor").value = doctorMatch[1].trim();
+            document.getElementById("location").value = locationMatch[1].trim();
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('appointmentModal'));
+            if (modal) {
+                modal.hide();
+            }
+            showToast("Appointment selected successfully", "success");
+        } else {
+            showToast("Error: Invalid appointment data", "danger");
+        }
+    };
+
+    // Initial calendar population
+    populateCalendar(currentMonth, currentYear);
+
+    // Now you can use updateAppointmentsList directly
+    document.getElementById('updateAppointments').addEventListener('click', async () => {
+        const success = await updateAppointmentsList();
+        if (success) {
+            showToast("Appointments list updated successfully!");
+            populateCalendar(currentMonth, currentYear);
+        } else {
+            showToast("Failed to update appointments list", "danger");
+        }
     });
-
-    function showToast() {
-      const toast = document.getElementById("toast");
-      toast.style.display = "block";
-      setTimeout(() => {
-        hideToast();
-      }, 3000); // Hide after 3 seconds
-    }
-
-    function hideToast() {
-      const toast = document.getElementById("toast");
-      toast.style.display = "none";
-    }
-  </script>
+</script>
 
   <!-- Include Bootstrap's JS bundle for proper hamburger functionality -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Add this before the closing </body> tag -->
+  <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="appointmentModalLabel">Available Appointments</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="appointmentsList">
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

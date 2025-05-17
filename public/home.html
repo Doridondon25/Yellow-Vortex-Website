@@ -101,22 +101,19 @@
             }
         }
         .image {
-            position: relative; /* Position the image relative to its nearest positioned ancestor */
-            top: 10px; /* Distance from the top */
-            right: 10px; /* Distance from the right */
-            width: 150px; /* Set an appropriate width */
-            height: auto; /* Maintain aspect ratio */
+            position: relative; 
+            top: 10px; 
+            right: 10px;
+            width: 150px; 
+            height: auto; 
             background-color: #4CAF50;
-            /* border: 5px solid #222; */
             border-radius: 20px;
-            /* box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5); */
             transition: transform 0.3s ease-in-out;
         }
         .image:hover {
             transform: scale(1.05);
         }
    
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             .hero-section h1 {
                 font-size: 1.5rem;
@@ -140,7 +137,7 @@
         }
 
         .nav-link:hover {
-            color: #d4edda !important; /* Light green hover effect */
+            color: #d4edda !important;
         }
 
         .dropdown-menu {
@@ -149,25 +146,25 @@
         }
 
         .dropdown-menu {
-            background-color: green; /* Light background color */
-            border-radius: 8px; /* Rounded corners */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            background-color: green;
+            border-radius: 8px; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
         }
 
         .dropdown-item {
             font-size: 1rem;
             font-weight: 500;
-            color: white; /* Default text color */
+            color: white; 
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .dropdown-item:hover {
-            background-color: #d4edda; /* Light green hover effect */
-            color: black; /* Dark green text on hover */
+            background-color: #d4edda; 
+            color: black; 
         }
 
         .dropdown-divider {
-            border-color: #ccc; /* Divider color */
+            border-color: #ccc; 
         }
 
     </style>
@@ -302,13 +299,15 @@
                 const response = await fetch('https://yellow-vortex-default-rtdb.europe-west1.firebasedatabase.app/commands/ECG.json');
                 const data = await response.json();
                 
-                const latestECG = data ? data.average_ecg : "--";
-                document.getElementById('ecg1').innerText = latestECG;
-                lastECG = latestECG;
-
+                lastECG = data && data.average_ecg ? Number(data.average_ecg) : "--";
+                document.getElementById('ecg1').innerText = lastECG;
+                
+                // Force comment update after new data
+                generateDoctorComment();
             } catch (error) {
                 console.error('Error fetching ECG data:', error);
                 document.getElementById('ecg1').innerText = "Error fetching data";
+                lastECG = "--";
             }
         }
 
@@ -318,13 +317,15 @@
                 const response = await fetch('https://yellow-vortex-default-rtdb.europe-west1.firebasedatabase.app/commands/BPM.json');
                 const data = await response.json();
                 
-                const latestBPM = data ? data.average_bpm : "--";
-                document.getElementById('heartRate1').innerText = latestBPM;
-                lastBPM = latestBPM;
-
+                lastBPM = data && data.average_bpm ? Number(data.average_bpm) : "--";
+                document.getElementById('heartRate1').innerText = lastBPM;
+                
+                // Force comment update after new data
+                generateDoctorComment();
             } catch (error) {
                 console.error('Error fetching BPM data:', error);
                 document.getElementById('heartRate1').innerText = "Error fetching data";
+                lastBPM = "--";
             }
         }
 
@@ -336,29 +337,42 @@
 
         // Function to generate doctor's comments
     function generateDoctorComment() {
-        let comment = "Awaiting doctor's assessment...";
-        let Vitals = "Wait";
-        
-        // Check if BPM and ECG are in healthy ranges
-        if (lastBPM >= 60 && lastBPM <= 100 && lastECG >= 50 && lastECG <= 100) {
-            comment = "Vitals are stable. Keep monitoring.";
-            Vitals = "Yes";
-            document.getElementById('Vitals1').style.color = "green"; // Set text color to black
-        } else if (lastBPM < 60) {
-            comment = "Heart rate too low. Please consult a doctor.";
-            Vitals = "No!";
-            document.getElementById('Vitals1').style.color = "red"; // Set text color to red
-        } else if (lastBPM > 100) {
-            comment = "Heart rate too high. Consider seeking medical help.";
-            Vitals = "No!";
-            document.getElementById('Vitals1').style.color = "red"; // Set text color to red
-        } else if (lastECG < 20 || lastECG > 120) {
-            comment = "ECG out of range. Further investigation required.";
-            Vitals = "No!";
-            document.getElementById('Vitals1').style.color = "red"; // Set text color to red
-        }
-        document.getElementById('Vitals1').innerText = Vitals;
-        document.getElementById('comment1').innerText = comment;
+    // Convert values to numbers
+    const bpm = Number(lastBPM);
+    const ecg = Number(lastECG);
+    
+    console.log('Current BPM:', bpm, 'Current ECG:', ecg); // Debug log
+    
+    let comment = "Awaiting doctor's assessment...";
+    let Vitals = "Wait";
+    
+    // Check if values are valid numbers
+    if (isNaN(bpm) || isNaN(ecg) || lastBPM === "--" || lastECG === "--") {
+        comment = "Waiting for vital signs data...";
+        Vitals = "Loading...";
+        document.getElementById('Vitals1').style.color = "black";
+    }
+    // Check ranges only if we have valid numbers
+    else if (bpm >= 60 && bpm <= 100 && ecg >= 50 && ecg <= 100) {
+        comment = "Vitals are stable. Keep monitoring.";
+        Vitals = "Yes";
+        document.getElementById('Vitals1').style.color = "green";
+    } else if (bpm < 60) {
+        comment = "Heart rate too low. Please consult a doctor.";
+        Vitals = "No!";
+        document.getElementById('Vitals1').style.color = "red";
+    } else if (bpm > 100) {
+        comment = "Heart rate too high. Consider seeking medical help.";
+        Vitals = "No!";
+        document.getElementById('Vitals1').style.color = "red";
+    } else if (ecg < 50 || ecg > 100) {
+        comment = "ECG out of range. Further investigation required.";
+        Vitals = "No!";
+        document.getElementById('Vitals1').style.color = "red";
+    }
+    
+    document.getElementById('Vitals1').innerText = Vitals;
+    document.getElementById('comment1').innerText = comment;
 }
 
         // Fetch data every 5 seconds

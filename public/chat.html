@@ -216,7 +216,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
         import { firebaseConfig } from "./js/firebase-config.js"; 
 
         const app = initializeApp(firebaseConfig);
@@ -248,13 +248,18 @@
             loadMessages();
         });
 
-        // Load messages for the selected user
-        function loadMessages() {
+        // Update the loadMessages function
+
+        async function loadMessages() {
             if (!selectedUser) return;
 
             const chatId = [currentUser.uid, selectedUser].sort().join("_");
             const messagesRef = collection(db, "chats", chatId, "messages");
             const q = query(messagesRef, orderBy("timestamp", "asc"));
+
+            // Get the selected user's name
+            const selectedUserDoc = await getDoc(doc(db, "users", selectedUser));
+            const selectedUserName = selectedUserDoc.data()?.fullName || "User";
 
             onSnapshot(q, (snapshot) => {
                 const messagesContainer = document.getElementById("messages");
@@ -264,7 +269,11 @@
                     const messageElement = document.createElement("div");
                     messageElement.classList.add("message");
                     const timestamp = message.timestamp ? new Date(message.timestamp.seconds * 1000).toLocaleTimeString() : '';
-                    messageElement.innerHTML = `<span class="sender">${message.senderId}:</span> <span class="text">${message.text}</span> <span class="timestamp">${timestamp}</span>`;
+                    
+                    // Show "Me" for current user's messages, otherwise show the other user's name
+                    const senderName = message.senderId === currentUser.uid ? "Me" : selectedUserName;
+                    
+                    messageElement.innerHTML = `<span class="sender">${senderName}:</span> <span class="text">${message.text}</span> <span class="timestamp">${timestamp}</span>`;
                     messagesContainer.appendChild(messageElement);
                 });
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;

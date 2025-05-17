@@ -101,18 +101,26 @@
         }
 
     .hero-section {
-      text-align: center;
-      padding: 20px 0;
+      text-align: left;  /* Change from center to left */
+      padding: 20px;
       background-color: rgba(255, 255, 255, 0.9);
       border-radius: 10px;
-      margin: 20px;
+      margin: 20px auto;
+      width: 100%;
+    }
+    .hero-section .d-flex {
+      margin-bottom: 15px;
+    }
+    .hero-section p {
+      margin-bottom: 0;
     }
     .container {
       background-color: rgba(255, 255, 255, 0.9);
       border-radius: 10px;
       padding: 20px;
-      margin: 20px;
-      max-width: 100%;
+      margin: 20px auto; /* Changed to auto for horizontal centering */
+      max-width: 95%;
+      width: 100%;
     }
     .medications-header {
       display: flex;
@@ -227,6 +235,12 @@
   color: #666;
   margin-top: 5px;
 }
+#reportContent {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
   </style>
 </head>
 <body>
@@ -266,42 +280,41 @@
       </div>
   </nav>
 
-    <!-- Export Buttons -->
-    <div class="text-end mt-5 me-3">
-      <button id="exportDOCX" class="btn btn-primary">Export as DOCX</button>
-    </div>
-
     <!-- Report Content -->
     <div id="reportContent">
       <!-- Hero Section -->
       <div class="hero-section mt-5 me-3">
-        <h1>Health Report</h1>
+        <div class="d-flex justify-content-between align-items-center">
+            <h1>Health Report</h1>
+            <button id="exportDOCX" class="btn btn-primary">Export as DOCX</button>
+        </div>
         <p>Track your health, See Conclusions, and follow doctor recommendations.</p>
+      </div>
 
     <!-- Personal Data Section -->
-<div class="container mt-4">
+<div class="container mt-4" id="personalData">
     <h3>Personal Information</h3>
     <div class="row">
-      <div class="col-md-6">
-        <h5>Name:</h5>
-        <p id="name">John Doe</p>
+        <div class="col-md-6">
+            <h5>Name:</h5>
+            <p id="name">John Doe</p>
+        </div>
+        <div class="col-md-6">
+            <h5>Date of Birth:</h5>
+            <p id="dob">01/01/1980</p>
+        </div>
     </div>
     <div class="row">
-      <div class="col-md-6">
-        <h5>Date of Birth:</h5>
-        <p id="dob">01/01/1980</p>
-      </div>
+        <div class="col-md-6">
+            <h5>Gender:</h5>
+            <p id="gender">Male</p>
+        </div>
+        <div class="col-md-6">
+            <h5>Phone Number:</h5>
+            <p id="phoneNumber">+1234567890</p>
+        </div>
     </div>
-    <div class="row">
-      <div class="col-md-6">
-        <h5>Gender:</h5>
-        <p id="gender">Male</p>
-      </div>
-      <div class="col-md-6">
-        <h5>Phone Number:</h5>
-        <p id="phoneNumber">+1234567890</p>
-      </div>
-    </div>
+
       <!-- Medications Section -->
       <div class="container med-table">
         <div class="medications-header">
@@ -388,8 +401,8 @@
   // References to the specific database paths
   const bpmRef        = ref(database, "/commands/BPM/average_bpm");
   const ecgRef        = ref(database, "/commands/ECG/average_ecg");
-  const humidityRef   = ref(database, "/commands/humidity/humidity");
-  const temperatureRef = ref(database, "/commands/temperature/temperature");
+  const humidityRef   = ref(database, "/commands/humidity");
+  const temperatureRef = ref(database, "/commands/temperature");
 
   // Element where data will be displayed (element containing "your data here")
   const outputElement = document.getElementById("your-data-here");
@@ -424,23 +437,23 @@
     // Make jsPDF accessible
     const { jsPDF } = window.jspdf;
 
-    // PDF export function using jsPDF
-    function exportPDF() {
-      const element = document.getElementById('reportContent');
-      const doc = new jsPDF('p', 'pt', 'a4');
-      doc.html(element, {
-        callback: function (doc) {
-          doc.save('HealthReport.pdf');
-        },
-        margin: [20, 20, 20, 20],   // optional margins around content
-        autoPaging: 'text',        // handle content split across pages
-        html2canvas: { scale: 0.9 } // scale down for better fit if needed
-      });
-    }
+    // // PDF export function using jsPDF
+    // function exportPDF() {
+    //   const element = document.getElementById('reportContent');
+    //   const doc = new jsPDF('p', 'pt', 'a4');
+    //   doc.html(element, {
+    //     callback: function (doc) {
+    //       doc.save('HealthReport.pdf');
+    //     },
+    //     margin: [20, 20, 20, 20],   // optional margins around content
+    //     autoPaging: 'text',        // handle content split across pages
+    //     html2canvas: { scale: 0.9 } // scale down for better fit if needed
+    //   });
+    // }
 
     // DOCX export function using html-docx-js and FileSaver
     function exportDOCX() {
-      const content = document.getElementById('reportContent').innerHTML;
+      const content = document.getElementById('personalData').innerHTML;
       const blob = window.htmlDocx.asBlob(content);
       saveAs(blob, 'HealthReport.docx');
     }
@@ -448,5 +461,64 @@
     // Attach event listeners to export buttons
     document.getElementById('exportDOCX').addEventListener('click', exportDOCX);
   </script>
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getDatabase, ref, get} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { firebaseConfig } from "./js/firebase-config.js";
+
+
+
+// Get references to HTML elements
+const nameEl = document.getElementById("name");
+const dobEl = document.getElementById("dob");
+const genderEl = document.getElementById("gender");
+const phoneNumberEl = document.getElementById("phoneNumber");
+
+async function fetchUserData() {
+    try {
+        // Get the userId from localStorage
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            console.warn('No userId found in localStorage.');
+            setDefaultValues();
+            return;
+        }
+
+        // Fetch the user's data from Firebase
+        const response = await fetch(`https://yellow-vortex-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}.json`);
+        const data = await response.json();
+
+        console.log('Fetched user data:', data);
+
+        // Update the personal information fields
+        if (data) {
+            nameEl.textContent = data.fullName || "N/A";
+            dobEl.textContent = data.dateOfBirth || "N/A";
+            genderEl.textContent = data.gender || "N/A";
+            phoneNumberEl.textContent = data.phoneNumber || "N/A";
+            
+            // Update welcome message
+            document.querySelector('.hero-section h1').innerText = `Welcome, ${data.fullName || "Guest"}`;
+        } else {
+            setDefaultValues();
+        }
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        setDefaultValues();
+    }
+}
+
+function setDefaultValues() {
+    nameEl.textContent = "Guest";
+    dobEl.textContent = "N/A";
+    genderEl.textContent = "N/A";
+    phoneNumberEl.textContent = "N/A";
+    document.querySelector('.hero-section h1').innerText = "Welcome, Guest";
+}
+
+// Call fetchUserData when the page loads
+document.addEventListener('DOMContentLoaded', fetchUserData);
+</script>
 </body>
 </html>

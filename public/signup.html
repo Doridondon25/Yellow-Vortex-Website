@@ -116,6 +116,19 @@
                 <input type="text" class="form-control" id="signupName" placeholder="Enter your name" required>
             </div>
             <div class="mb-3">
+                <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                <input type="date" class="form-control" id="dateOfBirth" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="gender" class="form-label">Gender</label>
+                <select class="form-select" id="gender" required>
+                    <option value="" disabled selected>Select your gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="mb-3">
                 <label for="signupEmail" class="form-label">Email address</label>
                 <input type="email" class="form-control" id="signupEmail" placeholder="Enter your email" required>
             </div>
@@ -183,6 +196,10 @@
             const address = document.getElementById("Address").value;
             const emergencyContact = document.getElementById("EmergencyContact").value;
             const emergencyContactNumber = document.getElementById("EmergencyContactNumber").value;
+            const gender = document.getElementById("gender").value;
+            const dateOfBirth = document.getElementById("dateOfBirth").value;
+        
+            
 
             // Validate product ID
             if (!validProductIds.includes(productId)) {
@@ -205,7 +222,9 @@
                     address: address,
                     emergencyContact: emergencyContact,
                     emergencyContactNumber: emergencyContactNumber,
-                    isConnect: "0" // Initial value for isConnect
+                    isConnect: "0",
+                    gender: gender,
+                    dateOfBirth: dateOfBirth
                 });
                 const firestore = getFirestore();
 

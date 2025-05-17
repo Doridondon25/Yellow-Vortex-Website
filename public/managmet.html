@@ -125,9 +125,9 @@
       }
 
       .emergency-title {
-        margin-top: -20px; /* Move it up */
+        margin-top: -50px; 
         position: relative;
-        top: -5px; /* Adjust as needed */
+        padding-bottom: 30px;
       }
 
       /* Emergency button */
@@ -490,7 +490,7 @@
             console.error("Failed to fetch IP address.");
             return;
           }
-          videoStreamURL = `http://${ipAddress}:81/stream`;
+          videoStreamURL = `http://10.200.2.42:81/stream`;
           const streamElement = document.getElementById("stream");
           streamElement.src = videoStreamURL;
 
@@ -503,6 +503,7 @@
           console.error("Error setting up image stream:", error);
         }
       }
+
       setupImageStream();
 
       // Emergency button logic
@@ -655,10 +656,10 @@
       }
 
       // Refs for temperature/humidity/ECG/BPM
-      const temperatureRef = ref(db, "commands/temperature/temperature");
-      const humidityRef = ref(db, "commands/humidity/humidity");
-      const ECGRef = ref(db, "commands/ECG/average_ecg");
-      const BPMRef = ref(db, "commands/BPM/average_bpm");
+      const temperatureRef = ref(db, "commands/temperature");
+      const humidityRef = ref(db, "commands/humidity");
+      const ECGRef = ref(db, "commands/ECG");
+      const BPMRef = ref(db, "commands/BPM");
 
       // Listen for temperature changes
       onValue(temperatureRef, (snapshot) => {
@@ -667,7 +668,7 @@
           const temperature = snapshot.val();
           updateTemperature(temperature);
         } else {
-          console.error("Temperature data does not exist!");
+          console.error("Temperature data is not updated!");
         }
       }, (error) => {
         console.error("Error reading temperature data:", error);
@@ -721,15 +722,15 @@
       const maxBPM = 200;
       let bpmData = [];
 
-      const maxECG = 4095; // or any suitable max for your ECG range
+      const maxECG = 400; 
       let ecgData = [];
 
       // Listen for ECG changes
       onValue(ECGRef, (snapshot) => {
         console.log("ECG snapshot:", snapshot.val());
         if (snapshot.exists()) {
-          const ECG = snapshot.val();
-          updateECG(ECG);
+          const ecgObject = snapshot.val();
+          const ECG = ecgObject.average_ecg;          updateECG(ECG);
           updateECGData(ECG); // update the ECG chart data
         } else {
           console.error("ECG data does not exist!");
@@ -741,8 +742,11 @@
       // Listen for BPM changes
       onValue(BPMRef, (snapshot) => {
         console.log("BPM snapshot:", snapshot.val());
+
         if (snapshot.exists()) {
-          const BPM = snapshot.val();
+          const bpmObject = snapshot.val();
+          const BPM = bpmObject.average_bpm; // ✅ FIX
+
           updateBPM(BPM);
           updateBPMData(BPM); // update the BPM chart data
         } else {
@@ -751,7 +755,6 @@
       }, (error) => {
         console.error("Error reading BPM data:", error);
       });
-
       // Update ECG text
       function updateECG(ECG) {
         const ecgValueElement = document.getElementById("ecg-value");
@@ -833,7 +836,8 @@
         ecgCtx.fillStyle = '#333';
 
         // For example, draw horizontal lines in steps of 500 if maxECG ~ 4095
-        for (let i = 0; i <= maxECG; i += 500) {
+        // Changed from 500 to 50 for more appropriate scale
+        for (let i = 0; i <= maxECG; i += 50) {
           const y = canvasHeight - (i / maxECG) * canvasHeight;
           ecgCtx.beginPath();
           ecgCtx.moveTo(0, y);
@@ -861,6 +865,18 @@
       drawBPMChart();
       drawECGChart();
       
+      // Add random numbers to ECG and BPM every second for demo/testing
+      setInterval(() => {
+        // Generate random BPM between 60 and 120
+        const randomBPM = Math.floor(Math.random() * (120 - 60 + 1)) + 60;
+        updateBPM(randomBPM);
+        updateBPMData(randomBPM);
+
+        // Generate random ECG between 100 and 300
+        const randomECG = Math.floor(Math.random() * (300 - 100 + 1)) + 100;
+        updateECG(randomECG);
+        updateECGData(randomECG);
+      }, 1000);
       
     </script>
   </body>

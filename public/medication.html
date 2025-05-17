@@ -175,6 +175,20 @@
       background-color: #fff;
       border: none;
     }
+    .med-table tr.taken td {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
+    .fa-check {
+      cursor: pointer;
+      margin-right: 10px;
+      transition: color 0.3s ease;
+    }
+
+    .fa-check.text-success {
+      color: #28a745;
+    }
   </style>
 </head>
 <body>
@@ -249,6 +263,7 @@
                   <td>Once daily</td>
                   <td>Morning</td>
                   <td>
+                    <i class="fa fa-check" onclick="toggleMedication(this)"></i>
                     <i class="fa fa-pen" onclick="editMedication(this)"></i>
                     <i class="fa fa-trash" onclick="deleteMedication(this)"></i>
                   </td>
@@ -259,6 +274,7 @@
                   <td>Once daily</td>
                   <td>Morning</td>
                   <td>
+                    <i class="fa fa-check" onclick="toggleMedication(this)"></i>
                     <i class="fa fa-pen" onclick="editMedication(this)"></i>
                     <i class="fa fa-trash" onclick="deleteMedication(this)"></i>
                   </td>
@@ -269,6 +285,7 @@
                   <td>As needed</td>
                   <td>With food</td>
                   <td>
+                    <i class="fa fa-check" onclick="toggleMedication(this)"></i>
                     <i class="fa fa-pen" onclick="editMedication(this)"></i>
                     <i class="fa fa-trash" onclick="deleteMedication(this)"></i>
                   </td>
@@ -382,6 +399,38 @@
       }
     });
 
+    function calculateProgress() {
+      const totalMeds = document.querySelectorAll('.med-table tbody tr').length;
+      const takenMeds = document.querySelectorAll('.med-table tbody tr.taken').length;
+      if (totalMeds === 0) return 0;
+      return Math.round((takenMeds / totalMeds) * 100);
+    }
+
+    function updateProgressBar() {
+      progress = calculateProgress();
+      progressBar.style.width = `${progress}%`;
+      progressBar.textContent = `${progress}%`;
+      
+      if (progress === 100) {
+        launchConfetti();
+        startCountdown();
+      }
+      if (progress === 0) {
+        countdownText.style.display = 'none';
+        updateButton.style.display = 'block';
+      } else {
+        countdownText.style.display = 'block';
+        updateButton.style.display = 'none';
+      }
+    }
+
+    function toggleMedication(icon) {
+      const row = icon.closest("tr");
+      row.classList.toggle("taken");
+      icon.classList.toggle("text-success");
+      updateProgressBar();
+    }
+
     function addMedication() {
       const name = document.getElementById('medicationName').value;
       const dosage = document.getElementById('medicationDosage').value;
@@ -398,6 +447,7 @@
         <td>${frequency}</td>
         <td>${time}</td>
         <td>
+          <i class="fa fa-check" onclick="toggleMedication(this)"></i>
           <i class="fa fa-pen" onclick="editMedication(this)"></i>
           <i class="fa fa-trash" onclick="deleteMedication(this)"></i>
         </td>
@@ -436,6 +486,7 @@
       if (confirm("Are you sure you want to delete this medication?")) {
         const row = icon.closest("tr");
         row.remove();
+        updateProgressBar();
       }
     }
     document.addEventListener('gesturestart', function (e) {
@@ -444,5 +495,84 @@
 
     document.getElementById('saveMedicationButton').addEventListener('click', addMedication);
   </script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getDatabase } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+  import { firebaseConfig } from "./js/firebase-config.js"; 
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  
+  // Make db available globally
+  window.db = db;
+</script>
+<script type="module">
+  import { addMedication, editMedication, deleteMedication, getMedications } from './js/medications.js';
+  import { ref, set, update, remove, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+  // TODO: Replace with your actual user authentication logic
+  const userId = localStorage.getItem('userId') || 'demo-user';
+
+  // Helper to render medications in the table
+  async function renderMedications() {
+    const meds = await getMedications(userId) || {};
+    const tableBody = document.querySelector('.med-table table tbody');
+    tableBody.innerHTML = '';
+    Object.entries(meds).forEach(([medId, med]) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${med.name}</td>
+        <td>${med.dosage}</td>
+        <td>${med.frequency}</td>
+        <td>${med.timeToTake}</td>
+        <td>
+          <i class="fa fa-check" style="cursor:pointer"></i>
+          <i class="fa fa-pen" style="cursor:pointer"></i>
+          <i class="fa fa-trash" style="cursor:pointer"></i>
+        </td>
+      `;
+      // Edit
+      row.querySelector('.fa-pen').onclick = async () => {
+        const name = prompt('Edit medication name:', med.name);
+        if (!name) return;
+        const dosage = prompt('Edit dosage:', med.dosage);
+        if (!dosage) return;
+        const frequency = prompt('Edit frequency:', med.frequency);
+        if (!frequency) return;
+        const timeToTake = prompt('Edit time to take:', med.timeToTake);
+        if (!timeToTake) return;
+        await editMedication(userId, medId, { name, dosage, frequency, timeToTake });
+        renderMedications();
+      };
+      // Delete
+      row.querySelector('.fa-trash').onclick = async () => {
+        if (confirm('Are you sure you want to delete this medication?')) {
+          await deleteMedication(userId, medId);
+          renderMedications();
+        }
+      };
+      tableBody.appendChild(row);
+    });
+  }
+
+  // Add medication
+  document.getElementById('saveMedicationButton').addEventListener('click', async () => {
+    const name = document.getElementById('medicationName').value;
+    const dosage = document.getElementById('medicationDosage').value;
+    const frequency = document.getElementById('medicationFrequency').value;
+    const timeToTake = document.getElementById('medicationTime').value;
+    if (!name || !dosage || !frequency || !timeToTake) return;
+    await addMedication(userId, { name, dosage, frequency, timeToTake });
+    document.getElementById('addMedicationForm').reset();
+    const addMedicationModal = bootstrap.Modal.getInstance(document.getElementById('addMedicationModal'));
+    addMedicationModal.hide();
+    renderMedications();
+  });
+
+  // Initial render
+  renderMedications();
+</script>
 </body>
 </html>
